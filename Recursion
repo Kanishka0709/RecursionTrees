@@ -1,0 +1,135 @@
+#include<iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+    
+    Node() {
+        left = right = NULL;
+    }
+};
+
+class BinaryTree {
+public:
+    Node* root;
+    
+    BinaryTree() {
+        root = NULL;
+    }
+    
+    void createNode(int value);
+    void display();
+    void inorder(Node* node);
+    void preorder(Node* node);
+    void postorder(Node* node);
+};
+
+void BinaryTree::createNode(int value) {
+    Node* temp = new Node();
+    temp->data = value;
+    
+    if (root == NULL) {
+        root = temp;
+    } else {
+        Node* x = root;
+        
+        while (x != NULL) {
+            if (value < x->data) {
+                if (x->left == NULL) {
+                    x->left = temp;
+                    break;
+                } else {
+                    x = x->left;
+                }
+            } else {
+                if (x->right == NULL) {
+                    x->right = temp;
+                    break;
+                } else {
+                    x = x->right;
+                }
+            }
+        }
+    }
+}
+
+void BinaryTree::display() {
+    if (root == NULL) {
+        cout << "Tree is empty" << endl;
+    } else {
+        inorder(root);
+    }
+}
+
+void BinaryTree::inorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    
+    inorder(node->left);
+    cout << node->data << " ";
+    inorder(node->right);
+}
+
+void BinaryTree::preorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    
+    cout << node->data << " ";  
+    preorder(node->left);       
+    preorder(node->right);      
+}
+
+void BinaryTree::postorder(Node* node) {
+    if (node == NULL) {
+        return;
+    }
+    
+    postorder(node->left);       
+    postorder(node->right); 
+    cout << node->data << " ";  
+}
+
+int main() {
+    BinaryTree bt;
+    int choice, value;
+    
+    do {
+        cout << "1. Insert Node\n2. Display Inorder\n3. Display Preorder\n4. Display Postorder\n5. Exit\n";
+        cin >> choice;
+        
+        switch(choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> value;
+                bt.createNode(value);
+                break;
+            case 2:
+                cout << "Inorder Traversal: ";
+                bt.display();
+                cout << endl;
+                break;
+            case 3:
+                cout << "Preorder Traversal: ";
+                bt.preorder(bt.root); 
+                cout << endl;
+                break;
+            case 4:
+                cout << "Postorder Traversal: ";
+                bt.postorder(bt.root); 
+                cout << endl;
+                break;
+            case 5:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+    } while (choice != 5);
+    
+    return 0;
+}
