@@ -1,0 +1,178 @@
+#include<iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+class stack {
+public:
+    Node* s[20];
+    int top;
+
+    stack() {
+        top = -1;
+    }
+
+    void push(Node* value) {
+        s[++top] = value;
+    }
+
+    Node* pop() {
+        if (top == -1) return NULL;
+        return s[top--];
+    }
+
+    int empty() {
+        return top == -1;
+    }
+};
+
+class BinaryTree {
+public:
+    Node* root;
+
+    BinaryTree() {
+        root = NULL;
+    }
+
+    void createNode(int value);
+    void inorder(Node* node);
+    void preorder(Node* node);
+    void postorder(Node* node);
+};
+
+void BinaryTree::createNode(int value) {
+    Node* temp = new Node(value);
+
+    if (root == NULL) {
+        root = temp;
+    } else {
+        Node* x = root;
+        while (x != NULL) {
+            if (value < x->data) {
+                if (x->left == NULL) {
+                    x->left = temp;
+                    break;
+                } else {
+                    x = x->left;
+                }
+            } else {
+                if (x->right == NULL) {
+                    x->right = temp;
+                    break;
+                } else {
+                    x = x->right;
+                }
+            }
+        }
+    }
+}
+
+void BinaryTree::inorder(Node* root) {
+    if (root == NULL) return;
+    stack st;
+    Node* curr = root;
+
+    while (curr != NULL || !st.empty()) {
+        while (curr != NULL) {
+            st.push(curr);
+            curr = curr->left;
+        }
+
+        curr = st.pop();
+        cout << curr->data << " ";
+        curr = curr->right;
+    }
+}
+
+void BinaryTree::preorder(Node* root) {
+    if (root == NULL) return;
+    stack st;
+    st.push(root);
+
+    while (!st.empty()) {
+        Node* node = st.pop();
+        cout << node->data << " ";
+
+        if (node->right) st.push(node->right);
+        if (node->left) st.push(node->left);
+    }
+}
+
+void BinaryTree::postorder(Node* root) {
+    if (root == NULL) return;
+    stack st1, st2;
+    st1.push(root);
+
+    while (!st1.empty()) {
+        Node* node = st1.pop();
+        st2.push(node);
+
+        if (node->left) st1.push(node->left);
+        if (node->right) st1.push(node->right);
+    }
+
+    while (!st2.empty()) {
+        Node* node = st2.pop();
+        cout << node->data << " ";
+    }
+}
+
+int main() {
+    BinaryTree bt;
+    int choice, value;
+
+    do {
+        cout << "1. Insert Node\n";
+        cout << "2. Display Inorder Traversal\n";
+        cout << "3. Display Preorder Traversal\n";
+        cout << "4. Display Postorder Traversal\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch(choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> value;
+                bt.createNode(value);
+                break;
+
+            case 2:
+                cout << "Inorder Traversal: ";
+                bt.inorder(bt.root);
+                cout << endl;
+                break;
+
+            case 3:
+                cout << "Preorder Traversal: ";
+                bt.preorder(bt.root);
+                cout << endl;
+                break;
+
+            case 4:
+                cout << "Postorder Traversal: ";
+                bt.postorder(bt.root);
+                cout << endl;
+                break;
+
+            case 5:
+                cout << "Exiting..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
