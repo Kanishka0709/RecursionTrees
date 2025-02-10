@@ -1,0 +1,100 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int key;
+    Node* left;
+    Node* right;
+    bool leftThread;
+    bool rightThread;
+
+    Node(int item) {
+        key = item;
+        left = right = nullptr;
+        leftThread = rightThread = true;
+    }
+};
+
+Node* insert(Node* root, int key) {
+    Node* newNode = new Node(key);
+    if (root == nullptr)
+        return newNode;
+
+    Node* current = root;
+    Node* parent = nullptr;
+
+    while (current != nullptr) {
+        parent = current;
+        if (key < current->key) {
+            if (!current->leftThread)
+                current = current->left;
+            else
+                break;
+        } else {
+            if (!current->rightThread)
+                current = current->right;
+            else
+                break;
+        }
+    }
+
+    if (key < parent->key) {
+        newNode->left = parent->left;
+        newNode->right = parent;
+        parent->leftThread = false;
+        parent->left = newNode;
+    } else {
+        newNode->left = parent;
+        newNode->right = parent->right;
+        parent->rightThread = false;
+        parent->right = newNode;
+    }
+
+    return root;
+}
+
+void inorder(Node* root) {
+    Node* current = root;
+    while (current->leftThread == false)
+        current = current->left;
+
+    while (current != nullptr) {
+        cout << current->key << " ";
+        if (current->rightThread)
+            current = current->right;
+        else {
+            current = current->right;
+            while (current->leftThread == false)
+                current = current->left;
+        }
+    }
+}
+
+int main() {
+    Node* root = nullptr;
+    int choice, key;
+
+    while (true) {
+        cout << "\n1. Insert\n2. Inorder Display\n3. Exit\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter key to insert: ";
+                cin >> key;
+                root = insert(root, key);
+                break;
+            case 2:
+                cout << "Inorder traversal: ";
+                inorder(root);
+                break;
+            case 3:
+                exit(0);
+            default:
+                cout << "Invalid choice! Please try again.";
+        }
+    }
+
+    return 0;
+}
